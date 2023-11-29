@@ -1,7 +1,15 @@
 import React, { useContext, useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "react-native-calendars";
-import { SafeAreaView, FlatList, View, Text, StyleSheet } from "react-native";
+import {
+  SafeAreaView,
+  FlatList,
+  View,
+  TouchableHighlight,
+  Text,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
@@ -96,12 +104,21 @@ function CalendarView() {
 }
 
 function AddView() {
+  const _onPressButton = () => {
+    Alert.alert("방금 누르셨어용");
+  };
+
   return (
     <SafeAreaView>
       <View style={styles.addTop}>
-        <View style={styles.addBook} id="addBook">
+        <TouchableHighlight
+          style={styles.addBook}
+          id="addBook"
+          onPress={_onPressButton}
+          underlayColor="white"
+        >
           <Text style={styles.searchText}>검색</Text>
-        </View>
+        </TouchableHighlight>
         <View>
           <Text>읽은 날짜</Text>
           <Text>책제목</Text>
