@@ -3,16 +3,22 @@ import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
-import StackNavigator from "./src/Screens/StackNavigator";
+import Home from "./src/Screens/Home";
+import SearchBook from "./src/Screens/SearchBook";
 
 function App() {
   return (
     <NavigationContainer>
-      <StackNavigator />
+      <Stack.Navigator>
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen name="도서 검색" component={SearchBook} />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
-
-const styles = StyleSheet.create({});
 
 export default App;

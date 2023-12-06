@@ -4,13 +4,11 @@ const Tab = createBottomTabNavigator();
 import CalendarView from "./CalenderView";
 import ListView from "./ListView";
 import AddBook from "./AddBook";
-import Test from "./Test";
 
-function StackNavigator() {
+function Home() {
   return (
     <Tab.Navigator>
       <Tab.Screen
-        initialRouteName="home"
         name="달력"
         component={CalendarView}
         options={{
@@ -41,4 +39,4 @@ function StackNavigator() {
   );
 }
 
-export default StackNavigator;
+export default Home;

@@ -5,140 +5,17 @@ import {
   TouchableHighlight,
   Text,
   StyleSheet,
-  Alert,
-  Pressable,
-  Modal,
-  TextInput,
-  Image,
-  ScrollView,
 } from "react-native";
-import { REST_API_KEY } from "../js/Apis";
-import axios from "axios";
-import { FlatList } from "react-native-gesture-handler";
 
 function AddBook({ navigation }) {
-  const [modalVisible, setModalVisible] = useState(false);
-  const inputAccessoryViewID = "searchBookTitle";
-  const initialText = "";
-  const [text, setText] = useState(initialText);
-  const [searchedBookList, setSelectedBookList] = useState([""]);
-  const [pageNum, setPageNum] = useState(1);
-
-  const _onPressBookSearch = ({ navigation }) => {
-    setModalVisible(!modalVisible);
-  };
-
-  const _onPressSearchBook = () => {
-    Alert.alert(text);
-    callBookAPI(text);
-  };
-
-  const callBookAPI = async (bookSearchKeyword) => {
-    await axios({
-      method: "GET",
-      url: `https://dapi.kakao.com/v3/search/book?page=${pageNum}&query=${bookSearchKeyword}`,
-      headers: { Authorization: `KakaoAK ${REST_API_KEY}` },
-    })
-      .then((res) => {
-        //searchedBookList = [...res.data.documents];
-        setSelectedBookList([...res.data.documents]);
-        console.log(searchedBookList);
-        // render();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const render = () => {
-    const bookListTemplate = searchedBookList
-      ? searchedBookList
-          .map((item, index) => {
-            return `
-            <View data-book-id="${index}">
-              <Image
-                source=${item.thumbnail}></Image>
-              <Text>${item.title}</Text>
-              <Text>${item.authors}</Text>
-              <Text>${item.publisher}</Text>
-              <Text>${item.datetime}</Text>
-            </View>
-          `;
-          })
-          .join("")
-      : `<Text>검색 결과가 없습니다.</Text>`;
-
-    document.getElementById("#test").innerHTML = bookListTemplate;
-  };
-
   return (
     <SafeAreaView>
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <Text>도서 검색</Text>
-          <View style={styles.searchForm}>
-            <TextInput
-              style={{
-                padding: 16,
-                marginLeft: 10,
-              }}
-              inputAccessoryViewID={inputAccessoryViewID}
-              onChangeText={setText}
-              value={text}
-              placeholder={"책 제목을 입력하세요..."}
-            ></TextInput>
-            <Pressable
-              style={(styles.button, styles.buttonClose)}
-              onPress={_onPressSearchBook}
-            >
-              <Text>검색</Text>
-            </Pressable>
-          </View>
-          <Text style={{ flex: 1 }}>
-            {searchedBookList
-              ? searchedBookList.map((item, index) => (
-                  <View key={index} style={styles.item}>
-                    <Image
-                      source={{ uri: item.thumbnail }}
-                      style={styles.image}
-                      resizeMode="cover"
-                    />
-                    <Text>{item.title}</Text>
-                    <Text>{item.authors}</Text>
-                    <Text>{item.publisher}</Text>
-                    <Text>{item.datetime}</Text>
-                  </View>
-                ))
-              : ``}
-            {/* {searchedBookList
-              ? searchedBookList.map((item, index) => (
-                  <ScrollView key={index} data={item}>
-                    <Image
-                      source={{ uri: item.thumbnail }}
-                      style={styles.image}
-                      resizeMode="cover"
-                    />
-                    <Text>{item.title}</Text>
-                  </ScrollView>
-                ))
-              : ``} */}
-          </Text>
-        </View>
-      </Modal>
-
       <View style={styles.addTop}>
         <TouchableHighlight
           style={styles.addBook}
           id="addBook"
           onPress={() => {
-            setModalVisible(true);
+            navigation.navigate("도서 검색");
           }}
           underlayColor="white"
         >
@@ -203,17 +80,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 13,
     padding: 10,
     elevation: 2,
-    alignContent: "center",
+    height: 40,
+    alignItems: "center",
     justifyContent: "center",
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+    backgroundColor: "green",
+    color: "white",
   },
   textStyle: {
     color: "white",
