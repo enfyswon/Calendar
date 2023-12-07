@@ -7,6 +7,7 @@ import {
   FlatList,
   Image,
   StyleSheet,
+  ActivityIndicator,
 } from "react-native";
 import axios from "axios";
 import { REST_API_KEY } from "../js/Apis";
@@ -17,6 +18,13 @@ function SearchBook() {
   const [text, setText] = useState(initialText);
   const [searchedBookList, setSearchedBookList] = useState([""]);
   const [pageNum, setPageNum] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const onEndReached = () => {
+    if (!loading) {
+      callBookAPI();
+    }
+  };
 
   const _onPressSearchBook = () => {
     callBookAPI(text);
@@ -62,24 +70,31 @@ function SearchBook() {
 
   return (
     <View>
-      <TextInput
-        style={{
-          padding: 16,
-          marginLeft: 10,
-        }}
-        inputAccessoryViewID={inputAccessoryViewID}
-        onChangeText={setText}
-        value={text}
-        placeholder={"책 제목을 입력하세요..."}
-      ></TextInput>
-      <Pressable onPress={_onPressSearchBook}>
-        <Text>검색</Text>
-      </Pressable>
+      <View stlye={styles.searchTab}>
+        <TextInput
+          style={{
+            padding: 16,
+            marginLeft: 10,
+            borderBottomWidth: 1,
+            width: "70%",
+          }}
+          inputAccessoryViewID={inputAccessoryViewID}
+          onChangeText={setText}
+          value={text}
+          placeholder={"책 제목을 입력하세요..."}
+        ></TextInput>
+        <Pressable onPress={_onPressSearchBook} style={styles.button}>
+          <Text style={{ color: "white" }}>검색</Text>
+        </Pressable>
+      </View>
 
       {searchedBookList ? (
         <FlatList
           data={searchedBookList}
           renderItem={({ item }) => <BookItem item={item}></BookItem>}
+          // onEndReached={onEndReached}
+          // onEndReachedThreshold={0.6}
+          ListFooterComponent={loading && <ActivityIndicator />}
         />
       ) : (
         ``
@@ -89,9 +104,24 @@ function SearchBook() {
 }
 
 const styles = StyleSheet.create({
+  searchTab: {
+    display: "flex",
+    flexDirection: "row",
+    backgroundColor: "red",
+    borderTopWidth: 1,
+  },
   image: {
     width: 50,
     height: 80,
+  },
+  button: {
+    borderRadius: 13,
+    backgroundColor: "green",
+    padding: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "15%",
+    elevation: 2,
   },
 });
 
