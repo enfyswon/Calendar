@@ -7,7 +7,7 @@ import {
   StyleSheet,
 } from "react-native";
 
-function AddBook({ navigation }) {
+function AddBook({ navigation, route }) {
   return (
     <SafeAreaView>
       <View style={styles.addTop}>
@@ -16,6 +16,7 @@ function AddBook({ navigation }) {
           id="addBook"
           onPress={() => {
             navigation.navigate("도서 검색");
+            // navigation.navigate("Test");
           }}
           underlayColor="white"
         >
@@ -23,9 +24,9 @@ function AddBook({ navigation }) {
         </TouchableHighlight>
         <View>
           <Text>읽은 날짜</Text>
-          <Text>책제목</Text>
-          <Text>작가</Text>
-          <Text>출판사</Text>
+          <Text>책제목: </Text>
+          <Text>작가: </Text>
+          <Text>출판사: </Text>
         </View>
       </View>
       <View>
