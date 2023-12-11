@@ -1,4 +1,6 @@
 import { SafeAreaView, FlatList, Text } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import * as SQLite from "expo-sqlite";
 
 function ListView() {
   const posts = [
