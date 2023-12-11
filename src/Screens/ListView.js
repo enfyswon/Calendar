@@ -1,23 +1,12 @@
 import { SafeAreaView, FlatList, Text } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import * as SQLite from "expo-sqlite";
 
-function openDatabase() {
-  if (Platform.OS === "web") {
-    return {
-      transaction: () => {
-        return {
-          executeSql: () => {},
-        };
-      },
-    };
-  }
+const express = require("express");
+const app = express();
 
-  const db = SQLite.openDatabase("RNtestDB.db");
-  return db;
-}
-
-const db = openDatabase();
+app.get("/", function(req, res) {
+  res.send("안녕하세요!");
+});
+app.listen(3000, () => console.log("3000포트에서 대기중"));
 
 function ListView() {
   const posts = [
