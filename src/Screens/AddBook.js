@@ -5,48 +5,17 @@ import {
   TouchableHighlight,
   Text,
   StyleSheet,
-  Alert,
-  Pressable,
-  Modal,
 } from "react-native";
-import Test from "./Test";
 
 function AddBook({ navigation }) {
-  const [modalVisible, setModalVisible] = useState(false);
-
-  const _onPressBookSearch = ({ navigation }) => {
-    setModalVisible(!modalVisible);
-  };
-
   return (
     <SafeAreaView>
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert("Modal has been closed.");
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <Pressable onPress={() => setModalVisible(!modalVisible)}>
-              <Text style={styles.modalText}>직접 등록</Text>
-            </Pressable>
-            <Text> | </Text>
-            <Pressable onPress={_onPressBookSearch}>
-              <Text style={styles.modalText}>책 검색</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal>
-
       <View style={styles.addTop}>
         <TouchableHighlight
           style={styles.addBook}
           id="addBook"
           onPress={() => {
-            setModalVisible(true);
+            navigation.navigate("도서 검색");
           }}
           underlayColor="white"
         >
@@ -68,10 +37,6 @@ function AddBook({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  calendar: {
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
   addTop: {
     display: "flex",
     flexDirection: "row",
@@ -115,15 +80,14 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 13,
     padding: 10,
     elevation: 2,
-  },
-  buttonOpen: {
-    backgroundColor: "#F194FF",
-  },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "green",
+    color: "white",
   },
   textStyle: {
     color: "white",
@@ -133,6 +97,24 @@ const styles = StyleSheet.create({
   modalText: {
     marginBottom: 15,
     textAlign: "center",
+  },
+  searchForm: {
+    // backgroundColor: "blue",
+    display: "flex",
+    flexDirection: "row",
+  },
+  image: {
+    width: 50,
+    height: 80,
+  },
+  item: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    height: 90,
+    paddingHorizontal: 20,
+    borderTopWidth: 1,
+    borderColor: "#000",
   },
 });
 
