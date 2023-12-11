@@ -2,55 +2,178 @@ import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
-  TouchableHighlight,
   Text,
   StyleSheet,
+  Image,
+  Pressable,
+  Button,
+  Modal,
+  TextInput,
+  Alert,
 } from "react-native";
+import DateTimePicker from "react-native-ui-datepicker";
+import dayjs from "dayjs";
+//https://github.com/farhoudshapouran/react-native-ui-datepicker
 
 function AddBook({ navigation, route }) {
+  // const [value, setValue] = useState(dayjs());
+  const [value, setValue] = useState("");
+  //날짜가 자동으로 오늘이 되면 좋겠지만 안좋았네요
+  const [modalVisible, setModalVisible] = useState(false);
+
+  console.log(value);
+
   return (
-    <SafeAreaView>
-      <View style={styles.addTop}>
-        <TouchableHighlight
-          style={styles.addBook}
-          id="addBook"
-          onPress={() => {
-            navigation.navigate("도서 검색");
-            // navigation.navigate("Test");
-          }}
-          underlayColor="white"
-        >
-          <Text style={styles.searchText}>검색</Text>
-        </TouchableHighlight>
+    <SafeAreaView
+      style={{
+        backgroundColor: "yellow",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <View style={styles.container}>
         <View>
-          <Text>읽은 날짜</Text>
-          <Text>책제목: </Text>
-          <Text>작가: </Text>
-          <Text>출판사: </Text>
+          <Modal
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                // backgroundColor: "yellow",
+                marginTop: 110,
+              }}
+            >
+              <View
+                style={{
+                  alignItems: "center",
+                  justifyContent: "center",
+                  margin: 20,
+                  padding: 10,
+                  paddingTop: 20,
+                  backgroundColor: "white",
+                  borderRadius: 15,
+                  elevation: 2,
+                }}
+              >
+                <DateTimePicker
+                  value={value}
+                  mode="date"
+                  selectedItemColor="#4DAC27"
+                  onValueChange={(date) => {
+                    setValue(date);
+                    setModalVisible(!modalVisible);
+                  }}
+                />
+              </View>
+            </View>
+          </Modal>
         </View>
-      </View>
-      <View>
-        <Text>⭐⭐⭐⭐⭐</Text>
-        <Text>후기쓰는란</Text>
+
+        <View style={styles.addTop}>
+          <Pressable
+            onPress={() => {
+              if (route.params) {
+                navigation.navigate("도서 검색", { text: route.params.title });
+              } else {
+                navigation.navigate("도서 검색");
+              }
+            }}
+          >
+            <Image
+              style={styles.addBook}
+              id="addBook"
+              underlayColor="white"
+              source={
+                route.params
+                  ? {
+                      uri: route.params.thumbnail,
+                    }
+                  : {
+                      uri: "https://i.imgur.com/97OsVAS.png",
+                    }
+              }
+            ></Image>
+          </Pressable>
+          <View>
+            <Text style={styles.titleText}>
+              {route.params ? route.params.title : "제목"}
+            </Text>
+            <Text style={styles.assistText}>
+              {route.params ? route.params.authors : "작가"}
+            </Text>
+            <Text style={styles.assistText}>
+              {route.params ? route.params.publisher : "출판사"}
+            </Text>
+            <View style={{ height: 20 }}></View>
+            {/* <Text>읽은 날짜</Text> */}
+            <Pressable onPress={() => setModalVisible(!modalVisible)}>
+              <Text>읽은 날짜</Text>
+            </Pressable>
+            <Text style={styles.readDate}>{value.substr(0, 10)}</Text>
+            {/* <Button
+              title="날짜 선택"
+              onPress={() => setModalVisible(!modalVisible)}
+              color={"#4DAC27"}
+            ></Button> */}
+            <Text style={styles.rate}>⭐⭐⭐⭐⭐</Text>
+          </View>
+        </View>
+        <View style={styles.review}>
+          <TextInput>후기쓰는란</TextInput>
+        </View>
+
+        <Button
+          title="저장"
+          color={"#4DAC27"}
+          onPress={() => {
+            Alert.alert("저장하시겠습니까?", "", [
+              {
+                text: "아니오",
+                onPress: () => console.log("Cancel Pressed"),
+                style: "cancel",
+              },
+              {
+                text: "네",
+                onPress: () => {
+                  navigation.navigate("달력");
+                  //저장하면서 추가 화면 데이터 지우기
+                },
+              },
+            ]);
+          }}
+        ></Button>
       </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    margin: 20,
+    padding: 5,
+    alignItems: "center",
+    height: "90%",
+    width: "90%",
+    backgroundColor: "red",
+  },
   addTop: {
     display: "flex",
     flexDirection: "row",
+    width: "100%",
   },
   addBook: {
-    borderColor: "black",
-    borderTopWidth: 1,
-    borderRightWidth: 1,
-    borderBottomWidth: 1,
-    borderLeftWidth: 1,
-    width: 50,
-    height: 70,
-    textAlign: "center",
+    width: 115,
+    height: 173,
+    borderRadius: 3,
+    borderWidth: 2,
+    margin: 5,
+    marginRight: 15,
   },
   searchText: {
     // fontSize: 10,
@@ -61,6 +184,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 22,
+    // backgroundColor: "purple",
   },
   modalView: {
     display: "flex",
@@ -105,8 +229,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   image: {
-    width: 50,
-    height: 80,
+    width: 84,
+    height: 126,
   },
   item: {
     flexDirection: "row",
@@ -116,6 +240,35 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderTopWidth: 1,
     borderColor: "#000",
+  },
+  titleText: {
+    fontSize: 18,
+    marginTop: 22,
+    marginBottom: 5,
+  },
+  assistText: {
+    fontSize: 15,
+    color: "#585858",
+    marginBottom: 3,
+  },
+  readDate: {
+    fontSize: 20,
+  },
+  rate: {
+    fontSize: 20,
+    marginTop: 3,
+  },
+  review: {
+    width: "100%",
+    height: "60%",
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: "#4DAC27",
+    padding: 8,
+    paddingLeft: 10,
+    paddingRight: 10,
+    marginTop: 10,
+    marginBottom: 10,
   },
 });
 
