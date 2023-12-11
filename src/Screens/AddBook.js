@@ -8,7 +8,6 @@ import {
 } from "react-native";
 
 function AddBook({ navigation, route }) {
-  console.log(route.params.title);
   return (
     <SafeAreaView>
       <View style={styles.addTop}>
@@ -25,9 +24,9 @@ function AddBook({ navigation, route }) {
         </TouchableHighlight>
         <View>
           <Text>읽은 날짜</Text>
-          <Text>책제목: {route.params.title}</Text>
-          <Text>작가: {route.params.authors}</Text>
-          <Text>출판사: {route.params.publisher}</Text>
+          <Text>책제목: </Text>
+          <Text>작가: </Text>
+          <Text>출판사: </Text>
         </View>
       </View>
       <View>
