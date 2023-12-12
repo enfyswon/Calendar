@@ -56,7 +56,6 @@ app.get("/api/booklist", (req, res) => {
 app.get("/api/bookday/:date", (req, res) => {
     res.header("Access-Control-Allow-Origin", "*");
     const { date } = req.params;
-    console.log(date);
     const sqlQuery = "SELECT" 
                     + "    book_id"
                     + "    , DATE_FORMAT(BOOK_DATE, '%Y-%m-%d')	AS book_date"

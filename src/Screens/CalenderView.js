@@ -40,7 +40,6 @@ function CalendarView() {
 
   const getBook = (date) => {
     try {
-      console.log(date);
       axios.get('http://192.168.0.174:3001/api/bookday/' + date)
       .then(res => {
         setBook(res.data);
