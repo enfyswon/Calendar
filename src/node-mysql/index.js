@@ -1,8 +1,11 @@
-const express = require('express');
-const router = express();
+const mysql = require("mysql");
+const dbConfig = require("./config.js");
 
-router.get('/test', (req, res) => {
-    res.send({test : "this is test"});
-})
+var connection = mysql.createPool({
+  host: dbConfig.HOST,
+  user: dbConfig.USER,
+  password: dbConfig.PASSWORD,
+  database: dbConfig.DB
+});
 
-module.exports = router;
+module.exports = connection;

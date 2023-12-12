@@ -125,7 +125,9 @@ function AddBook({ navigation, route }) {
           </View>
         </View>
         <View style={styles.review}>
-          <TextInput>후기쓰는란</TextInput>
+          <TextInput
+            //value={}
+          >후기쓰는란</TextInput>
         </View>
 
         <Button
@@ -141,6 +143,7 @@ function AddBook({ navigation, route }) {
               {
                 text: "네",
                 onPress: () => {
+                  //console.log(books);
                   navigation.navigate("달력");
                   //저장하면서 추가 화면 데이터 지우기
                 },
