@@ -17,10 +17,10 @@ import { REST_API_KEY } from "../js/Apis";
 
 function SearchBook({ navigation }) {
   const inputAccessoryViewID = "searchBookTitle";
-  const initialText = "";
-  const [text, setText] = useState(initialText);
+  const [text, setText] = useState("");
   const [searchedBookList, setSearchedBookList] = useState([""]);
   const [pageNum, setPageNum] = useState(1);
+  const [meta, setMeta] = useState(false);
   // const [loading, setLoading] = useState(false);
 
   const onEndReached = () => {
@@ -46,7 +46,13 @@ function SearchBook({ navigation }) {
       .then((res) => {
         setSearchedBookList([...res.data.documents]);
         setPageNum(pageNum + 1);
-        console.log(searchedBookList);
+        setMeta(res.data.meta);
+        console.log(meta);
+        if (res.data.meta.is_end === false) {
+          //.....is_end //현재 페이지가 마지막 페이지인가?
+          //pageable_count //검색결과로 제공 가능한 문서수
+          //total_count //전체 검색된 문서 수
+        }
         console.log(searchedBookList.length);
         // setLoading(false);
       })
@@ -63,10 +69,14 @@ function SearchBook({ navigation }) {
     <Pressable
       style={styles.item}
       onPress={() => {
-        navigation.navigate("추가", {
-          title: item.title,
-          authors: item.authors,
-          publisher: item.publisher,
+        navigation.navigate({
+          name: "추가",
+          params: {
+            title: item.title,
+            authors: item.authors,
+            publisher: item.publisher,
+            thumbnail: item.thumbnail,
+          },
         });
       }}
     >
@@ -115,11 +125,13 @@ function SearchBook({ navigation }) {
           style={styles.flatList}
           data={searchedBookList}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
-          renderItem={({ item }) => <BookItem item={item}></BookItem>}
+          renderItem={({ item }) => (
+            <BookItem item={item} key={item.isbn}></BookItem>
+          )}
           onEndReached={onEndReached}
-          onEndReachedThreshold={0.85}
+          onEndReachedThreshold={0.9}
           // ListFooterComponent={loading && <ActivityIndicator />}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.isbn}
         />
       ) : (
         <View></View>
