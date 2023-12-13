@@ -1,6 +1,6 @@
 import axios, { Axios } from "axios";
 import { useEffect, useState } from "react";
-import { View, SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { View, SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
 import { AntDesign } from '@expo/vector-icons'; 
 
 function ListView() {
@@ -8,7 +8,7 @@ function ListView() {
   
   useEffect(() => {
     getBooks();
-  }, []);
+  }, [books]);
 
   const getBooks = () => {
     axios.get('http://192.168.0.174:3001/api/booklist')
@@ -42,16 +42,26 @@ function ListView() {
               source={{uri: item.book_thumbnail}}
             ></Image>
               <View style={styles.bookItem}>
-                <Text>{item.book_id}</Text>
-                <Text>{item.book_title}</Text>
-                <Text>{item.book_author}</Text>
-                <Text>{item.book_date}</Text>
+                <Text style={styles.titleText}>{item.book_title}</Text>
+                <Text style={styles.assistText}>{item.book_author}</Text>
+                <Text style={styles.assistText}>{item.book_date}</Text>
               </View>
               <TouchableOpacity
                style={styles.deleteIcon}
                onPress={() => {
-                alert("삭제버튼" + item.book_id);
-                deleteBook(item.book_id);
+                Alert.alert("삭제하시겠습니까?", "", [
+                  {
+                    text: "아니오",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel",
+                  },
+                  {
+                    text: "네",
+                    onPress: () => {
+                      deleteBook(item.book_id);
+                    },
+                  },
+                ]);
               }}>
                 <AntDesign name="delete" size={24} color="black" />
               </TouchableOpacity>
@@ -67,18 +77,19 @@ const styles = StyleSheet.create({
   bookList: {
     margin: 20,
     padding: 5,
-    backgroundColor: "teal"
+    backgroundColor: "gray"
   },
   addTop: {
     display: "flex",
     flexDirection: "row",
     width: "100%",
     paddig: 5,
-    backgroundColor: "teal"
+    backgroundColor: "white",
+    borderBottomWidth: 1,
   },
   addBook: {
-    width: 115,
-    height: 173,
+    width: 100,
+    height: 140,
     borderRadius: 3,
     borderWidth: 2,
     margin: 5,
@@ -88,6 +99,16 @@ const styles = StyleSheet.create({
   bookItem: {
     margin: 5,
     width: "50%",
+  },
+  titleText: {
+    fontSize: 15,
+    marginTop: 15,
+    marginBottom: 5,
+  },
+  assistText: {
+    fontSize: 12,
+    color: "#585858",
+    marginBottom: 3,
   },
   deleteIcon: {
     alignItems: "center",

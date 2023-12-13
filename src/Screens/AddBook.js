@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import DateTimePicker from "react-native-ui-datepicker";
 import dayjs from "dayjs";
+import axios from "axios";
 //https://github.com/farhoudshapouran/react-native-ui-datepicker
 
 function AddBook({ navigation, route }) {
@@ -20,8 +21,21 @@ function AddBook({ navigation, route }) {
   const [value, setValue] = useState("");
   //날짜가 자동으로 오늘이 되면 좋겠지만 안좋았네요
   const [modalVisible, setModalVisible] = useState(false);
+  const [reviewText, setReviewText] = useState("");
 
-  console.log(value);
+  const putBook = () => {
+    axios.post('http://192.168.0.174:3001/api/insertBook', {
+      title: route.params.title,
+      author: route.params.authors,
+      publisher: route.params.publisher,
+      date: value,
+      star: '',
+      review: reviewText,
+      thumbnail: route.params.thumbnail
+    }).then(res => {
+      navigation.navigate("달력");
+    }).catch(error => console.log(error));
+  }
 
   return (
     <SafeAreaView
@@ -125,9 +139,12 @@ function AddBook({ navigation, route }) {
           </View>
         </View>
         <View style={styles.review}>
-          <TextInput
-            //value={}
-          >후기쓰는란</TextInput>
+        <TextInput
+            value={reviewText}
+            selectionColor={"#b1a995"}
+            onChange={setReviewText}
+            placeholder="후기 작성..."
+          ></TextInput>
         </View>
 
         <Button
@@ -143,8 +160,12 @@ function AddBook({ navigation, route }) {
               {
                 text: "네",
                 onPress: () => {
+                  console.log(route.params);
+                  console.log(value);
+                  console.log(review);
+                  putBook();
                   //console.log(books);
-                  navigation.navigate("달력");
+                  //navigation.navigate("달력");
                   //저장하면서 추가 화면 데이터 지우기
                 },
               },

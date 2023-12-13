@@ -80,7 +80,8 @@ app.get("/api/bookday/:date", (req, res) => {
 })
 
 app.post("/api/insertBook", (req, res) => {
-    const date = req.body.title;
+    console.log(req.body);
+    const date = req.body.date;
     const title = req.body.title;
     const author = req.body.author;
     const publisher = req.body.publisher;
