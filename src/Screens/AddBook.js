@@ -129,7 +129,7 @@ function AddBook({ navigation, route }) {
             <Pressable onPress={() => setModalVisible(!modalVisible)}>
               <Text>읽은 날짜</Text>
             </Pressable>
-            <Text style={styles.readDate}>{value.substr(0, 10)}</Text>
+            <Text style={styles.readDate}>{route.params ? route.params.date : value.substr(0, 10)}</Text>
             {/* <Button
               title="날짜 선택"
               onPress={() => setModalVisible(!modalVisible)}
@@ -140,7 +140,7 @@ function AddBook({ navigation, route }) {
         </View>
         <View style={styles.review}>
           <TextInput
-            value={reviewText}
+            value={route.params ? route.params.reviewText : reviewText}
             selectionColor={"#b1a995"}
             onChangeText={(reviewText) => {
               setReview(reviewText);

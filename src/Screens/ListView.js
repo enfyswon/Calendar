@@ -1,10 +1,11 @@
 import axios, { Axios } from "axios";
 import { useEffect, useState } from "react";
-import { View, SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, Image, Alert } from "react-native";
+import { View, SafeAreaView, FlatList, Text, StyleSheet, TouchableOpacity, Image, Alert, Pressable } from "react-native";
 import { AntDesign } from '@expo/vector-icons'; 
 
-function ListView() {
+function ListView({ navigation }) {
   const [books, setBooks] = useState([]);
+  const [book, setBook] = useState([]);
   
   useEffect(() => {
     getBooks();
@@ -27,6 +28,15 @@ function ListView() {
     .catch(error => console.log(error));
   });
 
+  const getBookId = ((id) => {
+    axios.get('http://192.168.0.174:3001/api/bookid/' + id)
+    .then(res => {
+      console.log(res.data);
+      setBook(res.data);
+    })
+    .catch(error => console.log(error));
+  });
+
   return (
     <SafeAreaView>
       <FlatList
@@ -34,13 +44,30 @@ function ListView() {
         keyExtractor={(item) => item.book_id}
         renderItem={({ item }) => {
           return (
+            <TouchableOpacity
+            onPress={() => {
+              getBookId(item.book_id);
+              navigation.navigate({
+                name:"추가",
+                params: {
+                  title: item.book_title,
+                  authors: item.book_author,
+                  publisher: item.book_publisher,
+                  thumbnail: item.book_thumbnail,
+                  reviewText: item.book_review,
+                  date: item.book_date
+                }
+              });
+            }}
+            >
+
             <View style={styles.addTop}>
               <Image
               style={styles.addBook}
               id="addBook"
               underlayColor="white"
               source={{uri: item.book_thumbnail}}
-            ></Image>
+              ></Image>
               <View style={styles.bookItem}>
                 <Text style={styles.titleText}>{item.book_title}</Text>
                 <Text style={styles.assistText}>{item.book_author}</Text>
@@ -51,23 +78,24 @@ function ListView() {
               <TouchableOpacity
                style={styles.deleteIcon}
                onPress={() => {
-                Alert.alert("삭제하시겠습니까?", "", [
-                  {
-                    text: "아니오",
-                    onPress: () => console.log("Cancel Pressed"),
-                    style: "cancel",
-                  },
-                  {
-                    text: "네",
-                    onPress: () => {
-                      deleteBook(item.book_id);
+                 Alert.alert("삭제하시겠습니까?", "", [
+                   {
+                     text: "아니오",
+                     onPress: () => console.log("Cancel Pressed"),
+                     style: "cancel",
                     },
-                  },
-                ]);
-              }}>
+                    {
+                      text: "네",
+                      onPress: () => {
+                        deleteBook(item.book_id);
+                      },
+                    },
+                  ]);
+                }}>
                 <AntDesign name="delete" size={24} color="gray" />
               </TouchableOpacity>
             </View>
+          </TouchableOpacity>
           );
       }}
       />
@@ -97,6 +125,11 @@ const styles = StyleSheet.create({
     margin: 5,
     marginRight: 15,
     backgroundColor: "white"
+  },
+  item: {
+    flexDirection: "row",
+    padding: 10,
+    alignItems: "center",
   },
   bookItem: {
     margin: 5,
