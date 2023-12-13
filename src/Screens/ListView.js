@@ -44,7 +44,9 @@ function ListView() {
               <View style={styles.bookItem}>
                 <Text style={styles.titleText}>{item.book_title}</Text>
                 <Text style={styles.assistText}>{item.book_author}</Text>
-                <Text style={styles.assistText}>{item.book_date}</Text>
+                <Text style={styles.assistText}>{item.book_publisher}</Text>
+                <Text>{item.book_date}</Text>
+                <Text>{item.book_review}</Text>
               </View>
               <TouchableOpacity
                style={styles.deleteIcon}
@@ -63,7 +65,7 @@ function ListView() {
                   },
                 ]);
               }}>
-                <AntDesign name="delete" size={24} color="black" />
+                <AntDesign name="delete" size={24} color="gray" />
               </TouchableOpacity>
             </View>
           );
@@ -98,11 +100,10 @@ const styles = StyleSheet.create({
   },
   bookItem: {
     margin: 5,
-    width: "50%",
+    width: "55%",
   },
   titleText: {
     fontSize: 15,
-    marginTop: 15,
     marginBottom: 5,
   },
   assistText: {
@@ -111,7 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   deleteIcon: {
-    alignItems: "center",
+    alignItems: "baseline",
     justifyContent: "center"
   }
 });

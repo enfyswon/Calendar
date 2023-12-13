@@ -77,7 +77,32 @@ app.get("/api/bookday/:date", (req, res) => {
             res.send(result);
         }
     })
-})
+});
+
+app.get("/api/bookid/:id", (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    const { id } = req.params;
+    const sqlQuery = "SELECT" 
+                    + "    book_id"
+                    + "    , DATE_FORMAT(BOOK_DATE, '%Y-%m-%d')	AS book_date"
+                    + "    , book_title"
+                    + "    , book_author"
+                    + "    , book_publisher"
+                    + "    , book_star"
+                    + "    , book_review"
+                    + "    , book_thumbnail"
+                    + "  FROM calendardb.book"
+                    + " WHERE book_id = ?";
+    
+    db.query(sqlQuery, [id], (err, result) => {
+        if (err) {
+            console.log(err);
+        } else {
+            //res.send("Select Day Success");
+            res.send(result);
+        }
+    })
+});
 
 app.post("/api/insertBook", (req, res) => {
     console.log(req.body);
@@ -88,6 +113,8 @@ app.post("/api/insertBook", (req, res) => {
     const star = req.body.star;
     const review = req.body.review;
     const thumbnail = req.body.thumbnail;
+
+    console.log(author.size);
 
     db.query(
         "INSERT INTO CALENDARDB.BOOK (BOOK_DATE, BOOK_TITLE, BOOK_AUTHOR, BOOK_PUBLISHER, BOOK_STAR, BOOK_REVIEW, BOOK_THUMBNAIL)"

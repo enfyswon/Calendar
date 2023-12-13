@@ -21,7 +21,7 @@ function AddBook({ navigation, route }) {
   const [value, setValue] = useState("");
   //날짜가 자동으로 오늘이 되면 좋겠지만 안좋았네요
   const [modalVisible, setModalVisible] = useState(false);
-  const [reviewText, setReviewText] = useState("");
+  const [reviewText, setReview] = useState("");
 
   const putBook = () => {
     axios.post('http://192.168.0.174:3001/api/insertBook', {
@@ -139,12 +139,14 @@ function AddBook({ navigation, route }) {
           </View>
         </View>
         <View style={styles.review}>
-        <TextInput
+          <TextInput
             value={reviewText}
             selectionColor={"#b1a995"}
-            onChange={setReviewText}
+            onChangeText={(reviewText) => {
+              setReview(reviewText);
+            }}
             placeholder="후기 작성..."
-          ></TextInput>
+          />
         </View>
 
         <Button
@@ -162,7 +164,7 @@ function AddBook({ navigation, route }) {
                 onPress: () => {
                   console.log(route.params);
                   console.log(value);
-                  console.log(review);
+                  console.log(reviewText);
                   putBook();
                   //console.log(books);
                   //navigation.navigate("달력");
