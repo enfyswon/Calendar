@@ -19,28 +19,30 @@ import axios from "axios";
 function AddBook({ navigation, route }) {
   // const [value, setValue] = useState(dayjs());
   const [value, setValue] = useState("");
-  //날짜가 자동으로 오늘이 되면 좋겠지만 안좋았네요
+  const [reviewText, setReview] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
-  const [reviewText, setReviewText] = useState("");
 
-  const putBook = () => {
-    axios.post('http://192.168.0.174:3001/api/insertBook', {
-      title: route.params.title,
-      author: route.params.authors,
-      publisher: route.params.publisher,
-      date: value,
-      star: '',
-      review: reviewText,
-      thumbnail: route.params.thumbnail
-    }).then(res => {
-      navigation.navigate("달력");
-    }).catch(error => console.log(error));
-  }
+  const putBook = async () => {
+    await axios
+      .post("http://172.30.1.33:3001/api/insertBook", {
+        title: route.params.title,
+        author: route.params.authors,
+        publisher: route.params.publisher,
+        date: value,
+        star: "",
+        review: reviewText,
+        thumbnail: route.params.thumbnail,
+      })
+      .then((res) => {
+        navigation.navigate("달력");
+      })
+      .catch((error) => console.log(error));
+  };
 
   return (
     <SafeAreaView
       style={{
-        backgroundColor: "yellow",
+        // backgroundColor: "yellow",
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -114,37 +116,36 @@ function AddBook({ navigation, route }) {
               }
             ></Image>
           </Pressable>
-          <View>
-            <Text style={styles.titleText}>
-              {route.params ? route.params.title : "제목"}
-            </Text>
-            <Text style={styles.assistText}>
-              {route.params ? route.params.authors : "작가"}
-            </Text>
-            <Text style={styles.assistText}>
-              {route.params ? route.params.publisher : "출판사"}
-            </Text>
-            <View style={{ height: 20 }}></View>
-            {/* <Text>읽은 날짜</Text> */}
+          <View style={{ flex: 1 }}>
+            <View style={styles.textBox}>
+              <Text style={styles.titleText}>
+                {route.params ? route.params.title : "제목"}
+              </Text>
+              <Text style={styles.assistText}>
+                {route.params ? route.params.authors : "작가"}
+              </Text>
+              <Text style={styles.assistText}>
+                {route.params ? route.params.publisher : "출판사"}
+              </Text>
+              <View style={{ height: 20 }}></View>
+            </View>
+
             <Pressable onPress={() => setModalVisible(!modalVisible)}>
               <Text>읽은 날짜</Text>
             </Pressable>
             <Text style={styles.readDate}>{value.substr(0, 10)}</Text>
-            {/* <Button
-              title="날짜 선택"
-              onPress={() => setModalVisible(!modalVisible)}
-              color={"#4DAC27"}
-            ></Button> */}
-            <Text style={styles.rate}>⭐⭐⭐⭐⭐</Text>
+            {/* <Text style={styles.rate}>⭐⭐⭐⭐⭐</Text> */}
           </View>
         </View>
         <View style={styles.review}>
-        <TextInput
+          <TextInput
             value={reviewText}
             selectionColor={"#b1a995"}
-            onChange={setReviewText}
+            onChangeText={(reviewText) => {
+              setReview(reviewText);
+            }}
             placeholder="후기 작성..."
-          ></TextInput>
+          />
         </View>
 
         <Button
@@ -162,7 +163,7 @@ function AddBook({ navigation, route }) {
                 onPress: () => {
                   console.log(route.params);
                   console.log(value);
-                  console.log(review);
+                  // console.log(review);
                   putBook();
                   //console.log(books);
                   //navigation.navigate("달력");
@@ -184,7 +185,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     height: "90%",
     width: "90%",
-    backgroundColor: "red",
+    // backgroundColor: "red",
   },
   addTop: {
     display: "flex",
@@ -265,12 +266,17 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderColor: "#000",
   },
+  textBox: {
+    flexWrap: "wrap",
+  },
   titleText: {
     fontSize: 18,
     marginTop: 22,
     marginBottom: 5,
+    width: "100%",
   },
   assistText: {
+    width: "100%",
     fontSize: 15,
     color: "#585858",
     marginBottom: 3,
@@ -283,16 +289,18 @@ const styles = StyleSheet.create({
     marginTop: 3,
   },
   review: {
-    width: "100%",
+    width: "97%",
     height: "60%",
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: "#4DAC27",
+    borderColor: "#b1a995",
     padding: 8,
     paddingLeft: 10,
     paddingRight: 10,
-    marginTop: 10,
-    marginBottom: 10,
+    margin: 10,
+    backgroundColor: "#f5f5f5",
+    // marginTop: 10,
+    // marginBottom: 10,
   },
 });
 

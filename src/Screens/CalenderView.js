@@ -1,25 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "react-native-calendars";
-import { View, FlatList, Text, StyleSheet } from "react-native";
+import { View, FlatList, Text, StyleSheet, Pressable } from "react-native";
 import axios, { Axios } from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-function CalendarView() {
+function CalendarView({ navigation }) {
   const [books, setBooks] = useState([]);
   const [book, setBook] = useState([]);
-  
-  useEffect(() => {
-    getBooks();
-  }, [books]);
 
-  const getBooks = () => {
-    axios.get('http://192.168.0.174:3001/api/booklist')
-    .then(res => {
-      setBooks(res.data);
-    })
-    .catch(error => console.log(error));
-  }
+  useEffect(() => {
+    try {
+      axios.get("http://172.30.1.33:3001/api/booklist").then((res) => {
+        setBooks(res.data);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+
+    getBook(format(new Date(), "yyyy-MM-dd"));
+  }, []);
 
   const markedDates = books.reduce((acc, current) => {
     const formattedDate = format(new Date(current.book_date), "yyyy-MM-dd");
@@ -40,11 +40,13 @@ function CalendarView() {
   };
 
   const getBook = (date) => {
-    axios.get('http://192.168.0.174:3001/api/bookday/' + date)
-    .then(res => {
-      setBook(res.data);
-    })
-    .catch (error => console.log(error));
+    try {
+      axios.get("http://172.30.1.33:3001/api/bookday/" + date).then((res) => {
+        setBook(res.data);
+      });
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -62,19 +64,34 @@ function CalendarView() {
           setSelectedDate(day.dateString);
           getBook(day.dateString);
         }}
-        />
-      <View>
-      <FlatList
-        style={styles.bookTitle}
-        data={book}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.bookList}>
-              <Text>{item.book_title}</Text>
-            </View>
-          );
-      }}
       />
+      <View>
+        <FlatList
+          style={styles.bookTitle}
+          data={book}
+          renderItem={({ item }) => {
+            return (
+              <Pressable
+                style={styles.bookList}
+                onPress={() => {
+                  navigation.navigate({
+                    name: "상세 조회",
+                    params: {
+                      title: item.book_title,
+                      authors: item.book_author,
+                      publisher: item.book_publisher,
+                      thumbnail: item.book_thumbnail,
+                      review: item.book_review,
+                      date: item.book_date,
+                    },
+                  });
+                }}
+              >
+                <Text style={{ fontSize: 17 }}>● {item.book_title}</Text>
+              </Pressable>
+            );
+          }}
+        />
       </View>
     </SafeAreaView>
   );
@@ -90,9 +107,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   bookTitle: {
+    // margin: 5,
+    padding: 20,
+  },
+  bookList: {
     margin: 5,
-    padding: 20
-  }
+  },
 });
 
 export default CalendarView;

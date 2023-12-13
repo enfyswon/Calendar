@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   Text,
   View,
@@ -18,17 +18,40 @@ import { REST_API_KEY } from "../js/Apis";
 function SearchBook({ navigation }) {
   const inputAccessoryViewID = "searchBookTitle";
   const [text, setText] = useState("");
-  const [searchedBookList, setSearchedBookList] = useState([""]);
+  const [searchedBookList, setSearchedBookList] = useState([]);
   const [pageNum, setPageNum] = useState(1);
   const [meta, setMeta] = useState(false);
+  const [isBookSearchd, setIsBookSearchd] = useState(false);
   // const [loading, setLoading] = useState(false);
 
-  const onEndReached = () => {
-    // if (!loading) {
-    // callBookAPI(text);
-    // }
+  //  console.log(searchedBookList);
 
-    callBookAPI(text);
+  const onEndReached = () => {
+    setPageNum(pageNum + 1);
+    const callMoreBookAPI = async (bookSearchKeyword) => {
+      await axios({
+        method: "GET",
+        url: `https://dapi.kakao.com/v3/search/book?page=${pageNum}&query=${bookSearchKeyword}`,
+        headers: { Authorization: `KakaoAK ${REST_API_KEY}` },
+      })
+        .then((res) => {
+          setSearchedBookList([...searchedBookList, ...res.data.documents]);
+          setPageNum(pageNum + 1);
+          setMeta(res.data.meta);
+          setIsBookSearchd(true);
+
+          if (res.data.meta.is_end === true) return;
+        })
+        .catch((err) => {
+          console.log(err);
+          setSearchedBookList([""]);
+          setPageNum(1);
+          setIsBookSearchd(false);
+          if (res.data.meta.is_end === true) return;
+        });
+    };
+
+    callMoreBookAPI(text);
   };
 
   const _onPressSearchBook = () => {
@@ -37,7 +60,6 @@ function SearchBook({ navigation }) {
   };
 
   const callBookAPI = async (bookSearchKeyword) => {
-    // setLoading(true);
     await axios({
       method: "GET",
       url: `https://dapi.kakao.com/v3/search/book?page=${pageNum}&query=${bookSearchKeyword}`,
@@ -45,23 +67,15 @@ function SearchBook({ navigation }) {
     })
       .then((res) => {
         setSearchedBookList([...res.data.documents]);
-        setPageNum(pageNum + 1);
         setMeta(res.data.meta);
-        console.log(meta);
-        if (res.data.meta.is_end === false) {
-          //.....is_end //현재 페이지가 마지막 페이지인가?
-          //pageable_count //검색결과로 제공 가능한 문서수
-          //total_count //전체 검색된 문서 수
-        }
-        console.log(searchedBookList.length);
-        // setLoading(false);
+        setIsBookSearchd(true);
+        console.log(pageNum);
       })
       .catch((err) => {
         console.log(err);
         setSearchedBookList([""]);
         setPageNum(1);
-        // console.log(searchedBookList);
-        // console.log(searchedBookList.length); //왜...1인거냐...
+        setIsBookSearchd(false);
       });
   };
 
@@ -101,7 +115,6 @@ function SearchBook({ navigation }) {
         <Text style={styles.assistText}>{item.publisher}</Text>
       </View>
     </Pressable>
-    // 목록에서 press 했을 때 효과
   );
 
   return (
@@ -115,12 +128,19 @@ function SearchBook({ navigation }) {
           placeholder={"책 제목을 입력하세요..."}
           selectionColor={"#4DAC27"}
         ></TextInput>
-        <Pressable onPress={_onPressSearchBook} style={styles.button}>
+        <Pressable
+          onPress={() => {
+            setPageNum(1);
+            setSearchedBookList([]);
+            _onPressSearchBook();
+          }}
+          style={styles.button}
+        >
           <Text style={styles.buttonText}>검색</Text>
         </Pressable>
       </View>
 
-      {searchedBookList ? (
+      {isBookSearchd === true ? (
         <FlatList
           style={styles.flatList}
           data={searchedBookList}
@@ -136,7 +156,6 @@ function SearchBook({ navigation }) {
       ) : (
         <View></View>
       )}
-      {/* TODO: 책 리스트 없을때 수정 필요 */}
       {/* flatList에서 endReached되면 목록의 마지막이 나옴, 이전 목록 안보임 */}
     </View>
   );

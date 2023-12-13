@@ -5,6 +5,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 const Stack = createStackNavigator();
 import Home from "./src/Screens/Home";
 import SearchBook from "./src/Screens/SearchBook";
+import DetailBook from "./src/Screens/DetailBook";
 import Test from "./src/Screens/Test";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="도서 검색" component={SearchBook} />
+        <Stack.Screen name="상세 조회" component={DetailBook} />
         <Stack.Screen name="Test" component={Test} />
       </Stack.Navigator>
     </NavigationContainer>
