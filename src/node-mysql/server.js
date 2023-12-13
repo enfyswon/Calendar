@@ -1,4 +1,3 @@
-
 const express = require("express"); // npm i express | yarn add express
 const cors    = require("cors");    // npm i cors | yarn add cors
 const mysql   = require("mysql");   // npm i mysql | yarn add mysql
@@ -114,8 +113,6 @@ app.post("/api/insertBook", (req, res) => {
     const review = req.body.review;
     const thumbnail = req.body.thumbnail;
 
-    console.log(author.size);
-
     db.query(
         "INSERT INTO CALENDARDB.BOOK (BOOK_DATE, BOOK_TITLE, BOOK_AUTHOR, BOOK_PUBLISHER, BOOK_STAR, BOOK_REVIEW, BOOK_THUMBNAIL)"
         + "VALUES (?, ?, ?, ?, ?, ?, ?)",
@@ -125,6 +122,37 @@ app.post("/api/insertBook", (req, res) => {
                 console.log(err);
             } else {
                 res.send("Insert Success");
+            }
+        }
+    );
+});
+
+app.put("/api/updateBook", (req, res) => {
+    console.log("update");
+    console.log(req.body);
+    const id = req.body.book_id;
+    const date = req.body.date;
+    const title = req.body.title;
+    const author = req.body.author;
+    const publisher = req.body.publisher;
+    const review = req.body.review;
+    const thumbnail = req.body.thumbnail;
+
+    db.query(
+        "UPDATE CALENDARDB.BOOK SET BOOK_DATE = ?"
+        + "                       , BOOK_TITLE = ?"
+        + "                       , BOOK_AUTHOR = ?"
+        + "                       , BOOK_PUBLISHER = ?"
+        + "                       , BOOK_REVIEW = ?"
+        + "                       , BOOK_THUMBNAIL = ?"
+        + "WHERE BOOK_ID = ?",
+        [date, title, author, publisher, review, thumbnail, id],
+        (err, result) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(result);
+                res.send("Update Success");
             }
         }
     );

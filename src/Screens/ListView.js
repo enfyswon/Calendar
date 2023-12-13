@@ -47,16 +47,19 @@ function ListView({ navigation }) {
             <TouchableOpacity
             onPress={() => {
               getBookId(item.book_id);
-              navigation.navigate({
-                name:"추가",
-                params: {
-                  title: item.book_title,
-                  authors: item.book_author,
-                  publisher: item.book_publisher,
-                  thumbnail: item.book_thumbnail,
-                  reviewText: item.book_review,
-                  date: item.book_date
-                }
+              navigation.reset({
+                routes: [{
+                  name:"추가",
+                  params: {
+                    book_id: item.book_id,
+                    title: item.book_title,
+                    authors: item.book_author,
+                    publisher: item.book_publisher,
+                    thumbnail: item.book_thumbnail,
+                    reviewText: item.book_review,
+                    date: item.book_date,
+                  }
+                }]
               });
             }}
             >
