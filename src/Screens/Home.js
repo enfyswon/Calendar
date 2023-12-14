@@ -26,7 +26,7 @@ function Home() {
           ),
         }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="추가"
         component={AddBook}
         options={{
@@ -34,7 +34,7 @@ function Home() {
             <AntDesign name="plus" color={color} size={size} />
           ),
         }}
-      />
+      /> */}
     </Tab.Navigator>
   );
 }

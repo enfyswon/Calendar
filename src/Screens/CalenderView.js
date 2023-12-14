@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Calendar } from "react-native-calendars";
-import { View, FlatList, Text, StyleSheet, Pressable } from "react-native";
+import {
+  View,
+  FlatList,
+  Text,
+  StyleSheet,
+  Pressable,
+  Button,
+} from "react-native";
 import axios, { Axios } from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -93,6 +100,12 @@ function CalendarView({ navigation }) {
           }}
         />
       </View>
+      <Button
+        title="test"
+        onPress={() => {
+          navigation.navigate("추가");
+        }}
+      ></Button>
     </SafeAreaView>
   );
 }

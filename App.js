@@ -6,6 +6,7 @@ const Stack = createStackNavigator();
 import Home from "./src/Screens/Home";
 import SearchBook from "./src/Screens/SearchBook";
 import DetailBook from "./src/Screens/DetailBook";
+import AddBook from "./src/Screens/AddBook";
 import Test from "./src/Screens/Test";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           component={Home}
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="추가" component={AddBook} />
         <Stack.Screen name="도서 검색" component={SearchBook} />
         <Stack.Screen name="상세 조회" component={DetailBook} />
         <Stack.Screen name="Test" component={Test} />
