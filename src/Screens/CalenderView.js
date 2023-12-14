@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import axios, { Axios } from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { AntDesign } from "@expo/vector-icons";
 
 function CalendarView({ navigation }) {
   const [books, setBooks] = useState([]);
@@ -18,7 +19,7 @@ function CalendarView({ navigation }) {
 
   useEffect(() => {
     try {
-      axios.get("http://172.30.1.33:3001/api/booklist").then((res) => {
+      axios.get("http://192.168.56.1:3001/api/booklist").then((res) => {
         setBooks(res.data);
       });
     } catch (e) {
@@ -48,7 +49,7 @@ function CalendarView({ navigation }) {
 
   const getBook = (date) => {
     try {
-      axios.get("http://172.30.1.33:3001/api/bookday/" + date).then((res) => {
+      axios.get("http://192.168.56.1:3001/api/bookday/" + date).then((res) => {
         setBook(res.data);
       });
     } catch (e) {
@@ -72,7 +73,7 @@ function CalendarView({ navigation }) {
           getBook(day.dateString);
         }}
       />
-      <View>
+      <View style={styles.test}>
         <FlatList
           style={styles.bookTitle}
           data={book}
@@ -99,13 +100,15 @@ function CalendarView({ navigation }) {
             );
           }}
         />
+        <Pressable
+          style={styles.abbBtn}
+          onPress={() => {
+            navigation.navigate("추가");
+          }}
+        >
+          <AntDesign name="plus" color={"white"} size={38} />
+        </Pressable>
       </View>
-      <Button
-        title="test"
-        onPress={() => {
-          navigation.navigate("추가");
-        }}
-      ></Button>
     </SafeAreaView>
   );
 }
@@ -125,6 +128,21 @@ const styles = StyleSheet.create({
   },
   bookList: {
     margin: 5,
+  },
+  abbBtn: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 53,
+    height: 53,
+    right: 15,
+    backgroundColor: "#4dac27",
+    borderRadius: 50,
+  },
+  test: {
+    alignItems: "flex-end",
+    justifyContent: "flex-end",
+    width: "100%",
+    height: 240,
   },
 });
 
