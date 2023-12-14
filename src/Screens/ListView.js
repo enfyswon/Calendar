@@ -15,6 +15,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 function ListView({ navigation }) {
   const [books, setBooks] = useState([]);
+  let key = 0;
 
   useEffect(() => {
     getBooks();
@@ -34,7 +35,7 @@ function ListView({ navigation }) {
       .get("http://192.168.0.174:3001/api/bookid/" + id)
       .then((res) => {
         console.log(res.data);
-        setBook(res.data);
+        setBooks(res.data);
       })
       .catch((error) => console.log(error));
   };
@@ -59,22 +60,19 @@ function ListView({ navigation }) {
             <Pressable
               style={styles.addTop}
               onPress={() => {
+                console.log("리스트 ", item);
                 getBookId(item.book_id);
-                navigation.reset({
-                  routes: [
-                    {
-                      name: "추가",
-                      params: {
-                        book_id: item.book_id,
-                        title: item.book_title,
-                        authors: item.book_author,
-                        publisher: item.book_publisher,
-                        thumbnail: item.book_thumbnail,
-                        reviewText: item.book_review,
-                        date: item.book_date,
-                      },
-                    },
-                  ],
+                navigation.navigate({
+                  name: "추가",
+                  params: {
+                    book_id: item.book_id,
+                    title: item.book_title,
+                    authors: item.book_author,
+                    publisher: item.book_publisher,
+                    thumbnail: item.book_thumbnail,
+                    review: item.book_review,
+                    date: item.book_date,
+                  },
                 });
               }}
             >

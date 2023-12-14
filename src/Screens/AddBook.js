@@ -20,6 +20,7 @@ function AddBook({ navigation, route }) {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
+    console.log("addbook 진입", route.params);
     if (route.params != undefined) {
       setValue(route.params.date);
       setReview(route.params.review);
@@ -38,7 +39,7 @@ function AddBook({ navigation, route }) {
         thumbnail: route.params.thumbnail,
       })
       .then((res) => {
-        navigation.navigate("달력");
+        navigation.navigate("Home");
       })
       .catch((error) => console.log(error));
   };
@@ -56,7 +57,7 @@ function AddBook({ navigation, route }) {
         thumbnail: route.params.thumbnail,
       })
       .then((res) => {
-        navigation.navigate("달력");
+        navigation.navigate("Home");
       })
       .catch((error) => console.log(error));
   };
@@ -179,7 +180,7 @@ function AddBook({ navigation, route }) {
             title="취소"
             color="lightgray"
             onPress={() => {
-              navigation.navigate("달력");
+              navigation.navigate("Home");
             }}
           />
           <Button

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -23,6 +23,7 @@ function SearchBook({ navigation }) {
   const [meta, setMeta] = useState(false);
   const [isBookSearchd, setIsBookSearchd] = useState(false);
   // const [loading, setLoading] = useState(false);
+  let key = 0;
 
   //  console.log(searchedBookList);
 
@@ -151,7 +152,10 @@ function SearchBook({ navigation }) {
           onEndReached={onEndReached}
           onEndReachedThreshold={0.9}
           // ListFooterComponent={loading && <ActivityIndicator />}
-          keyExtractor={(item) => item.isbn}
+          // keyExtractor={(item) => item.isbn}
+          keyExtractor={() => {
+            key + 1;
+          }}
         />
       ) : (
         <View></View>

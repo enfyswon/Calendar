@@ -93,6 +93,7 @@ function CalendarView({ navigation }) {
               <Pressable
                 style={styles.bookList}
                 onPress={() => {
+                  console.log("달력 ", item);
                   navigation.navigate({
                     name: "추가",
                     params: {
