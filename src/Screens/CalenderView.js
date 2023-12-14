@@ -17,16 +17,18 @@ function CalendarView({ navigation }) {
   const [book, setBook] = useState([]);
 
   useEffect(() => {
-    try {
-      axios.get("http://172.30.1.33:3001/api/booklist").then((res) => {
-        setBooks(res.data);
-      });
-    } catch (e) {
-      console.log(e);
-    }
-
+    getBooks();
     getBook(format(new Date(), "yyyy-MM-dd"));
-  }, []);
+  }, [books]);
+
+  const getBooks = () => {
+    axios
+      .get("http://192.168.0.174:3001/api/booklist")
+      .then((res) => {
+        setBooks(res.data);
+      })
+      .catch((error) => console.log(error));
+  };
 
   const markedDates = books.reduce((acc, current) => {
     const formattedDate = format(new Date(current.book_date), "yyyy-MM-dd");
@@ -48,7 +50,7 @@ function CalendarView({ navigation }) {
 
   const getBook = (date) => {
     try {
-      axios.get("http://172.30.1.33:3001/api/bookday/" + date).then((res) => {
+      axios.get("http://192.168.0.174:3001/api/bookday/" + date).then((res) => {
         setBook(res.data);
       });
     } catch (e) {

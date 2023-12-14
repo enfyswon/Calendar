@@ -21,7 +21,7 @@ function ListView({ navigation }) {
 
   const getBooks = () => {
     axios
-      .get("http://172.30.1.33:3001/api/booklist")
+      .get("http://192.168.0.174:3001/api/booklist")
       .then((res) => {
         setBooks(res.data);
       })

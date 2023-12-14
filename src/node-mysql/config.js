@@ -1,6 +1,6 @@
 module.exports = {
-  HOST: "127.0.0.1",
-  USER: "root",
-  PASSWORD: "0000",
-  DB: "calendarDB",
+  host: "192.168.0.174",
+  user: "root",
+  password: "P@ssword1!",
+  db: "calendarDB",
 };
