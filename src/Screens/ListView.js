@@ -9,7 +9,6 @@ import {
   TouchableOpacity,
   Image,
   Alert,
-  Pressable,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -31,13 +30,14 @@ function ListView({ navigation }) {
 
   const deleteBook = (id) => {
     axios
-      .delete("http://172.30.1.33:3001/api/delete/" + id)
+      .delete("http://192.168.0.174:3001/api/delete/" + id)
       .then((res) => {
         console.log(res.data);
         getBooks();
       })
       .catch((error) => console.log(error));
   };
+
   return (
     <SafeAreaView>
       <FlatList
@@ -45,55 +45,39 @@ function ListView({ navigation }) {
         keyExtractor={(item) => item.book_id}
         renderItem={({ item }) => {
           return (
-            <Pressable
-              onPress={() => {
-                navigation.navigate({
-                  name: "상세 조회",
-                  params: {
-                    title: item.book_title,
-                    authors: item.book_author,
-                    publisher: item.book_publisher,
-                    thumbnail: item.book_thumbnail,
-                    review: item.book_review,
-                    date: item.book_date,
-                  },
-                });
-              }}
-            >
-              <View style={styles.addTop}>
-                <Image
-                  style={styles.addBook}
-                  id="addBook"
-                  underlayColor="white"
-                  source={{ uri: item.book_thumbnail }}
-                ></Image>
-                <View style={styles.bookItem}>
-                  <Text style={styles.titleText}>{item.book_title}</Text>
-                  <Text style={styles.assistText}>{item.book_author}</Text>
-                  <Text style={styles.assistText}>{item.book_date}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.deleteIcon}
-                  onPress={() => {
-                    Alert.alert("삭제하시겠습니까?", "", [
-                      {
-                        text: "아니오",
-                        onPress: () => console.log("Cancel Pressed"),
-                        style: "cancel",
-                      },
-                      {
-                        text: "네",
-                        onPress: () => {
-                          deleteBook(item.book_id);
-                        },
-                      },
-                    ]);
-                  }}
-                >
-                  <AntDesign name="delete" size={24} color="gray" />
-                </TouchableOpacity>
+            <View style={styles.addTop}>
+              <Image
+                style={styles.addBook}
+                id="addBook"
+                underlayColor="white"
+                source={{ uri: item.book_thumbnail }}
+              ></Image>
+              <View style={styles.bookItem}>
+                <Text style={styles.titleText}>{item.book_title}</Text>
+                <Text style={styles.assistText}>{item.book_author}</Text>
+                <Text style={styles.assistText}>{item.book_date}</Text>
               </View>
-            </Pressable>
+              <TouchableOpacity
+                style={styles.deleteIcon}
+                onPress={() => {
+                  Alert.alert("삭제하시겠습니까?", "", [
+                    {
+                      text: "아니오",
+                      onPress: () => console.log("Cancel Pressed"),
+                      style: "cancel",
+                    },
+                    {
+                      text: "네",
+                      onPress: () => {
+                        deleteBook(item.book_id);
+                      },
+                    },
+                  ]);
+                }}
+              >
+                <AntDesign name="delete" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
           );
         }}
       />
@@ -124,12 +108,17 @@ const styles = StyleSheet.create({
     marginRight: 15,
     backgroundColor: "white",
   },
+  item: {
+    flexDirection: "row",
+    padding: 10,
+    alignItems: "center",
+  },
   bookItem: {
     margin: 5,
     width: "55%",
   },
   titleText: {
-    fontSize: 20,
+    fontSize: 15,
     marginTop: 15,
     marginBottom: 5,
   },
@@ -139,7 +128,7 @@ const styles = StyleSheet.create({
     marginBottom: 3,
   },
   deleteIcon: {
-    alignItems: "baseline",
+    alignItems: "center",
     justifyContent: "center",
   },
 });

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   SafeAreaView,
   View,
@@ -22,22 +22,44 @@ function AddBook({ navigation, route }) {
   const [reviewText, setReview] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
 
-  const putBook = async () => {
-    await axios
-      .post("http://172.30.1.33:3001/api/insertBook", {
-        title: route.params.title,
-        author: route.params.authors,
-        publisher: route.params.publisher,
-        date: value,
-        star: "",
-        review: reviewText,
-        thumbnail: route.params.thumbnail,
-      })
-      .then((res) => {
-        navigation.navigate("달력");
-      })
-      .catch((error) => console.log(error));
-  };
+  useEffect(() => {
+    if (route.params != undefined) {
+      console.log(route.params.date);
+      console.log(route.params.reviewText);
+      console.log(route.params.book_id);
+      setValue(route.params.date);
+      setReview(route.params.reviewText);
+    }
+  }, []);
+
+  const putBook = () => {
+    axios.post('http://192.168.0.174:3001/api/insertBook', {
+      title: route.params.title,
+      author: route.params.authors,
+      publisher: route.params.publisher,
+      date: value,
+      star: '',
+      review: reviewText,
+      thumbnail: route.params.thumbnail
+    }).then(res => {
+      navigation.navigate("달력");
+    }).catch(error => console.log(error));
+  }
+
+  const updateBook = () => {
+    console.log("update : " + route.params.book_id);
+    axios.put('http://192.168.0.174:3001/api/updateBook', {
+      book_id: route.params.book_id,
+      title: route.params.title,
+      author: route.params.authors,
+      publisher: route.params.publisher,
+      date: value,
+      review: reviewText,
+      thumbnail: route.params.thumbnail,
+    }).then(res => {
+      navigation.navigate("달력");
+    }).catch(error => console.log(error));
+  }
 
   return (
     <SafeAreaView
@@ -134,17 +156,26 @@ function AddBook({ navigation, route }) {
               <Text>읽은 날짜</Text>
             </Pressable>
             <Text style={styles.readDate}>{value.substr(0, 10)}</Text>
-            {/* <Text style={styles.rate}>⭐⭐⭐⭐⭐</Text> */}
+            {/* <Button
+              title="날짜 선택"
+              onPress={() => setModalVisible(!modalVisible)}
+              color={"#4DAC27"}
+            ></Button> */}
           </View>
         </View>
         <View style={styles.review}>
+          <TextInput
           <TextInput
             value={reviewText}
             selectionColor={"#b1a995"}
             onChangeText={(reviewText) => {
               setReview(reviewText);
             }}
+            onChangeText={(reviewText) => {
+              setReview(reviewText);
+            }}
             placeholder="후기 작성..."
+          />
           />
         </View>
 
@@ -161,13 +192,7 @@ function AddBook({ navigation, route }) {
               {
                 text: "네",
                 onPress: () => {
-                  console.log(route.params);
-                  console.log(value);
-                  // console.log(review);
-                  putBook();
-                  //console.log(books);
-                  //navigation.navigate("달력");
-                  //저장하면서 추가 화면 데이터 지우기
+                  {route.params.book_id ? updateBook(route.params.book_id) : putBook()}
                 },
               },
             ]);

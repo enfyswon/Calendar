@@ -55,7 +55,7 @@ app.get("http://172.30.1.33:3001/api/booklist", (req, res) => {
   });
 });
 
-app.get("http://172.30.1.33:3001/api/bookday/:date", (req, res) => {
+app.get("/api/bookday/:date", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const { date } = req.params;
   const sqlQuery =
@@ -129,6 +129,68 @@ app.post("/api/insertBook", (req, res) => {
         console.log(err);
       } else {
         res.send("Insert Success");
+      }
+    }
+  );
+});
+
+app.put("/api/updateBook", (req, res) => {
+  console.log("update");
+  console.log(req.body);
+  const id = req.body.book_id;
+  const date = req.body.date;
+  const title = req.body.title;
+  const author = req.body.author;
+  const publisher = req.body.publisher;
+  const review = req.body.review;
+  const thumbnail = req.body.thumbnail;
+
+  db.query(
+    "UPDATE CALENDARDB.BOOK SET BOOK_DATE = ?" +
+      "                       , BOOK_TITLE = ?" +
+      "                       , BOOK_AUTHOR = ?" +
+      "                       , BOOK_PUBLISHER = ?" +
+      "                       , BOOK_REVIEW = ?" +
+      "                       , BOOK_THUMBNAIL = ?" +
+      "WHERE BOOK_ID = ?",
+    [date, title, author, publisher, review, thumbnail, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
+        res.send("Update Success");
+      }
+    }
+  );
+});
+
+app.put("/api/updateBook", (req, res) => {
+  console.log("update");
+  console.log(req.body);
+  const id = req.body.book_id;
+  const date = req.body.date;
+  const title = req.body.title;
+  const author = req.body.author;
+  const publisher = req.body.publisher;
+  const review = req.body.review;
+  const thumbnail = req.body.thumbnail;
+
+  db.query(
+    "UPDATE CALENDARDB.BOOK SET BOOK_DATE = ?" +
+      "                       , BOOK_TITLE = ?" +
+      "                       , BOOK_AUTHOR = ?" +
+      "                       , BOOK_PUBLISHER = ?" +
+      "                       , BOOK_REVIEW = ?" +
+      "                       , BOOK_THUMBNAIL = ?" +
+      "WHERE BOOK_ID = ?",
+    [date, title, author, publisher, review, thumbnail, id],
+    (err, result) => {
+      if (err) {
+        console.log(err);
+      } else {
+        console.log(result);
+        res.send("Update Success");
       }
     }
   );
