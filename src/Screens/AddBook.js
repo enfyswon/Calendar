@@ -21,17 +21,14 @@ function AddBook({ navigation, route }) {
 
   useEffect(() => {
     if (route.params != undefined) {
-      console.log(route.params.date);
-      console.log(route.params.reviewText);
-      console.log(route.params.book_id);
       setValue(route.params.date);
-      setReview(route.params.reviewText);
+      setReview(route.params.review);
     }
   }, []);
 
   const putBook = () => {
     axios
-      .post("http://192.168.0.174:3001/api/insertBook", {
+      .post("http://172.30.1.33:3001/api/insertBook", {
         title: route.params.title,
         author: route.params.authors,
         publisher: route.params.publisher,
@@ -49,7 +46,7 @@ function AddBook({ navigation, route }) {
   const updateBook = () => {
     console.log("update : " + route.params.book_id);
     axios
-      .put("http://192.168.0.174:3001/api/updateBook", {
+      .put("http://172.30.1.33:3001/api/updateBook", {
         book_id: route.params.book_id,
         title: route.params.title,
         author: route.params.authors,
@@ -67,7 +64,6 @@ function AddBook({ navigation, route }) {
   return (
     <SafeAreaView
       style={{
-        // backgroundColor: "yellow",
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
@@ -158,12 +154,7 @@ function AddBook({ navigation, route }) {
             <Pressable onPress={() => setModalVisible(!modalVisible)}>
               <Text>읽은 날짜</Text>
             </Pressable>
-            <Text style={styles.readDate}>{value.substr(0, 10)}</Text>
-            {/* <Button
-              title="날짜 선택"
-              onPress={() => setModalVisible(!modalVisible)}
-              color={"#4DAC27"}
-            ></Button> */}
+            <Text style={styles.readDate}>{value.substring(0, 10)}</Text>
           </View>
         </View>
         <View style={styles.review}>
@@ -177,29 +168,52 @@ function AddBook({ navigation, route }) {
           />
         </View>
 
-        <Button
-          title="저장"
-          color={"#4DAC27"}
-          onPress={() => {
-            Alert.alert("저장하시겠습니까?", "", [
-              {
-                text: "아니오",
-                onPress: () => console.log("Cancel Pressed"),
-                style: "cancel",
-              },
-              {
-                text: "네",
-                onPress: () => {
-                  {
-                    route.params.book_id
-                      ? updateBook(route.params.book_id)
-                      : putBook();
-                  }
-                },
-              },
-            ]);
+        <View
+          style={{
+            flexDirection: "row",
+            width: "80%",
+            justifyContent: "space-around",
           }}
-        ></Button>
+        >
+          <Button
+            title="취소"
+            color="lightgray"
+            onPress={() => {
+              navigation.navigate("달력");
+            }}
+          />
+          <Button
+            title="저장"
+            color={"#4DAC27"}
+            onPress={() => {
+              Alert.alert("저장하시겠습니까?", "", [
+                {
+                  text: "아니오",
+                  onPress: () => console.log("Cancel Pressed"),
+                  style: "cancel",
+                },
+                {
+                  text: "네",
+                  onPress: () => {
+                    if (!route.params) {
+                      Alert.alert("책을 등록해주세요");
+                      return;
+                    }
+                    if (reviewText === "") {
+                      Alert.alert("내용을 작성해주세요");
+                      return;
+                    }
+                    {
+                      route.params.book_id
+                        ? updateBook(route.params.book_id)
+                        : putBook();
+                    }
+                  },
+                },
+              ]);
+            }}
+          ></Button>
+        </View>
       </View>
     </SafeAreaView>
   );

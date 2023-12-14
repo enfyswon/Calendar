@@ -12,6 +12,7 @@ import {
 import axios, { Axios } from "axios";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AntDesign } from "@expo/vector-icons";
+import { ScrollView } from "react-native-gesture-handler";
 
 function CalendarView({ navigation }) {
   const [books, setBooks] = useState([]);
@@ -19,7 +20,7 @@ function CalendarView({ navigation }) {
 
   useEffect(() => {
     try {
-      axios.get("http://192.168.56.1:3001/api/booklist").then((res) => {
+      axios.get("http://172.30.1.33:3001/api/booklist").then((res) => {
         setBooks(res.data);
       });
     } catch (e) {
@@ -28,6 +29,16 @@ function CalendarView({ navigation }) {
 
     getBook(format(new Date(), "yyyy-MM-dd"));
   }, []);
+
+  useEffect(() => {
+    try {
+      axios.get("http://172.30.1.33:3001/api/booklist").then((res) => {
+        setBooks(res.data);
+      });
+    } catch (e) {
+      console.log(e);
+    }
+  }, [books]);
 
   const markedDates = books.reduce((acc, current) => {
     const formattedDate = format(new Date(current.book_date), "yyyy-MM-dd");
@@ -49,7 +60,7 @@ function CalendarView({ navigation }) {
 
   const getBook = (date) => {
     try {
-      axios.get("http://192.168.56.1:3001/api/bookday/" + date).then((res) => {
+      axios.get("http://172.30.1.33:3001/api/bookday/" + date).then((res) => {
         setBook(res.data);
       });
     } catch (e) {
@@ -58,7 +69,7 @@ function CalendarView({ navigation }) {
   };
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ height: "100%" }}>
       <Calendar
         style={styles.calendar}
         markedDates={markedSelectedDates}
@@ -83,8 +94,9 @@ function CalendarView({ navigation }) {
                 style={styles.bookList}
                 onPress={() => {
                   navigation.navigate({
-                    name: "상세 조회",
+                    name: "추가",
                     params: {
+                      book_id: item.book_id,
                       title: item.book_title,
                       authors: item.book_author,
                       publisher: item.book_publisher,
@@ -95,20 +107,22 @@ function CalendarView({ navigation }) {
                   });
                 }}
               >
-                <Text style={{ fontSize: 17 }}>● {item.book_title}</Text>
+                <Text style={{ fontSize: 17 }}>
+                  ●&nbsp;&nbsp;{item.book_title}
+                </Text>
               </Pressable>
             );
           }}
         />
-        <Pressable
-          style={styles.abbBtn}
-          onPress={() => {
-            navigation.navigate("추가");
-          }}
-        >
-          <AntDesign name="plus" color={"white"} size={38} />
-        </Pressable>
       </View>
+      <Pressable
+        style={styles.abbBtn}
+        onPress={() => {
+          navigation.navigate("추가");
+        }}
+      >
+        <AntDesign name="plus" color={"white"} size={38} />
+      </Pressable>
     </SafeAreaView>
   );
 }
@@ -137,12 +151,9 @@ const styles = StyleSheet.create({
     right: 15,
     backgroundColor: "#4dac27",
     borderRadius: 50,
-  },
-  test: {
-    alignItems: "flex-end",
-    justifyContent: "flex-end",
-    width: "100%",
-    height: 240,
+    position: "absolute",
+    right: 15,
+    bottom: 25,
   },
 });
 

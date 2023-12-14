@@ -6,7 +6,7 @@ const PORT = 3001; // 포트번호 설정
 
 // MySQL 연결
 const db = mysql.createPool({
-  host: "127.0.0.1", // 호스트
+  host: "localhost", // 호스트
   user: "root", // 데이터베이스 계정
   password: "0000", // 데이터베이스 비밀번호
   db: "calendarDB", // 사용할 데이터베이스
@@ -21,7 +21,7 @@ app.use(
 );
 
 // post 요청 시 값을 객체로 바꿔줌
-// app.use(cors());
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,7 +30,7 @@ app.listen(PORT, () => {
   console.log(`server running on port ${PORT}`);
 });
 
-app.get("http://172.30.1.33:3001/api/booklist", (req, res) => {
+app.get(`/api/booklist`, (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
 
   const sqlQuery =
@@ -44,7 +44,7 @@ app.get("http://172.30.1.33:3001/api/booklist", (req, res) => {
     "    , book_review" +
     "    , book_thumbnail" +
     "  FROM calendardb.book" +
-    " ORDER BY book_date";
+    " ORDER BY book_date DESC";
 
   db.query(sqlQuery, (err, result) => {
     if (err) {
@@ -82,7 +82,7 @@ app.get("/api/bookday/:date", (req, res) => {
   });
 });
 
-app.get("/api/bookid/:id", (req, res) => {
+app.get("http://172.30.1.33/api/bookid/:id", (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   const { id } = req.params;
   const sqlQuery =

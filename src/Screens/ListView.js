@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Pressable,
 } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 
@@ -28,9 +29,19 @@ function ListView({ navigation }) {
       .catch((error) => console.log(error));
   };
 
+  const getBookId = (id) => {
+    axios
+      .get("http://192.168.0.174:3001/api/bookid/" + id)
+      .then((res) => {
+        console.log(res.data);
+        setBook(res.data);
+      })
+      .catch((error) => console.log(error));
+  };
+
   const deleteBook = (id) => {
     axios
-      .delete("http://192.168.0.174:3001/api/delete/" + id)
+      .delete("http://172.30.1.33:3001/api/delete/" + id)
       .then((res) => {
         console.log(res.data);
         getBooks();
@@ -45,7 +56,28 @@ function ListView({ navigation }) {
         keyExtractor={(item) => item.book_id}
         renderItem={({ item }) => {
           return (
-            <View style={styles.addTop}>
+            <Pressable
+              style={styles.addTop}
+              onPress={() => {
+                getBookId(item.book_id);
+                navigation.reset({
+                  routes: [
+                    {
+                      name: "추가",
+                      params: {
+                        book_id: item.book_id,
+                        title: item.book_title,
+                        authors: item.book_author,
+                        publisher: item.book_publisher,
+                        thumbnail: item.book_thumbnail,
+                        reviewText: item.book_review,
+                        date: item.book_date,
+                      },
+                    },
+                  ],
+                });
+              }}
+            >
               <Image
                 style={styles.addBook}
                 id="addBook"
@@ -77,7 +109,7 @@ function ListView({ navigation }) {
               >
                 <AntDesign name="delete" size={24} color="black" />
               </TouchableOpacity>
-            </View>
+            </Pressable>
           );
         }}
       />
